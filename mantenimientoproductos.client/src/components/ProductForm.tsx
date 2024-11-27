@@ -13,6 +13,8 @@ import {
     Paper,
 } from '@mui/material';
 import api from '../services/api';
+import { useNavigate } from 'react-router-dom';
+
 
 const ProductForm = ({ productId, onClose }: { productId?: string; onClose: () => void }) => {
     const [product, setProduct] = useState({
@@ -26,6 +28,8 @@ const ProductForm = ({ productId, onClose }: { productId?: string; onClose: () =
     });
     const [categories, setCategories] = useState<string[]>([]);
     const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         fetchCategories();
@@ -234,7 +238,7 @@ const ProductForm = ({ productId, onClose }: { productId?: string; onClose: () =
                         Guardar
                     </Button>
                     <Button
-                        onClick={onClose}
+                        onClick={() => navigate('/')} 
                         sx={{
                             backgroundColor: '#ef5350',
                             color: '#fff',
