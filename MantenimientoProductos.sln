@@ -7,6 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MantenimientoProductos.Serv
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "mantenimientoproductos.client", "mantenimientoproductos.client\mantenimientoproductos.client.esproj", "{934CF0C3-1CF8-4687-96C9-61A8B8479748}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{AA76E295-6300-4AEF-BC63-B65EA1911EA9}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
