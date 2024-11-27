@@ -1,0 +1,75 @@
+# Build files
+bin/
+obj/
+publish/
+out/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code directories and files
+.vscode/
+.vscode/settings.json
+
+# Visual Studio
+.vs/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs/
+*.log
+*.tlog
+*.vspscc
+*.pid
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# npm package-lock
+package-lock.json
+yarn.lock
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ASP.NET Core HTTPS
+*.db
+*.jfm
+*.pfx
+*.pem
+*.crt
+*.key
+
+# React specific
+build/
+dist/
+
+# Other files
+.idea/
+*.iml
+*.ipch
+*.obj
+*.pch
+*.class
+*.tmp
+*.swp
+*.dir
+.DS_Store
+*.sqlite
+*.sqlite3
+*.mdf
+*.ldf
