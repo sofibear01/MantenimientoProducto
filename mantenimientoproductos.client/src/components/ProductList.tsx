@@ -15,6 +15,7 @@ import {
     IconButton,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit'; // Ícono de edición
+
 import { useNavigate } from 'react-router-dom';
 
 const ProductList = () => {
@@ -67,42 +68,73 @@ const ProductList = () => {
 
     return (
         <div style={{ minHeight: '100vh', backgroundColor: '#e3f2fd', padding: '20px' }}>
-            <Typography
-                variant="h4"
-                component="h1"
-                gutterBottom
-                style={{ textAlign: 'center', color: '#0d47a1', fontWeight: 'bold' }}
-            >
+            <Typography variant="h4" component="h1" className="form-title">
                 Listado de productos
             </Typography>
-            <div style={{ maxWidth: '90%', margin: '0 auto', paddingTop: '20px' }}>
-                <div style={{ marginBottom: '20px' }}>
-                    <ButtonGroup variant="contained" aria-label="actions">
-                        <Button
-                            onClick={handleNewProduct}
-                            style={{ backgroundColor: '#42a5f5', color: '#fff', marginRight: '10px' }}
-                        >
-                            Nuevo
-                        </Button>
-                        <Button
-                            onClick={handleDeleteProduct}
-                            style={{ backgroundColor: '#ef5350', color: '#fff', marginRight: '10px' }}
-                        >
-                            Eliminar
-                        </Button>
-                        <Button
-                            onClick={handleExportProducts}
-                            style={{ backgroundColor: '#29b6f6', color: '#fff' }}
-                        >
-                            Exportar
-                        </Button>
-                    </ButtonGroup>
+
+            <div
+                style={{
+                    height: '2px', // Grosor de la línea
+                    background: 'linear-gradient(to right, #42a5f5, #1565c0)',
+                    borderRadius: '999px',
+                    margin: '16px auto',
+                    width: '90%', // Línea horizontal centrada
+                }}
+            ></div>
+
+            {/* Contenedor padre común */}
+            <div
+                style={{
+                    maxWidth: '90%',
+                    margin: '0 auto',
+                    paddingTop: '20px',
+                }}
+            >
+                {/* Contenedor para los botones */}
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'flex-end', // Alinea los botones a la derecha
+                        marginBottom: '20px',
+                        width: '100%',
+                    }}
+                >
+                    <Button
+                        onClick={handleNewProduct}
+                        sx={{
+                            backgroundColor: '#66bb6a',
+                            color: '#fff',
+                            marginRight: '10px',
+                            transition: 'transform 0.2s ease',
+                            '&:hover': {
+                                backgroundColor: '#57a05b',
+                                transform: 'scale(1.1)',
+                            },
+                        }}
+                    >
+                        Nuevo
+                    </Button>
+                    <Button
+                        onClick={handleExportProducts}
+                        sx={{
+                            backgroundColor: '#29b6f6',
+                            color: '#fff',
+                            transition: 'transform 0.2s ease',
+                            '&:hover': {
+                                backgroundColor: '#2196f3',
+                                transform: 'scale(1.1)',
+                            },
+                        }}
+                    >
+                        Exportar
+                    </Button>
                 </div>
+
+                {/* Contenedor para la tabla */}
                 <TableContainer
                     component={Paper}
                     style={{
-                        maxWidth: '90%',
-                        margin: '0 auto',
+                        width: '100%', // Ocupa todo el ancho disponible para coincidir con los botones
                         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
                     }}
                 >
@@ -116,7 +148,7 @@ const ProductList = () => {
                                 <TableCell><strong>Price</strong></TableCell>
                                 <TableCell><strong>Discount</strong></TableCell>
                                 <TableCell><strong>Active</strong></TableCell>
-                                <TableCell><strong>Actions</strong></TableCell> {/* Nueva columna */}
+                                <TableCell><strong>Actions</strong></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -156,6 +188,7 @@ const ProductList = () => {
             </div>
         </div>
     );
+
 };
 
 export default ProductList;

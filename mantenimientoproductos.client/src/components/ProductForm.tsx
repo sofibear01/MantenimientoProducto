@@ -73,10 +73,14 @@ const ProductForm = ({ productId, onClose }: { productId?: string; onClose: () =
 
     const validate = () => {
         const newErrors: { [key: string]: string } = {};
-        if (!product.code) newErrors.code = 'El c�digo es obligatorio';
-        if (!product.description) newErrors.description = 'La descripci�n es obligatoria';
-        if (!product.category) newErrors.category = 'La categor�a es obligatoria';
-        if (!product.price) newErrors.price = 'El precio es obligatorio';
+
+        // Campos obligatorios
+        if (!product.code) newErrors.code = 'El código es obligatorio';
+        if (!product.description) newErrors.description = 'La descripción es obligatoria';
+        if (!product.category) newErrors.category = 'La categoría es obligatoria';
+        if (!product.price || product.price <= 0) {
+            newErrors.price = 'El precio es obligatorio y debe ser mayor a 0';
+        }
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -98,106 +102,156 @@ const ProductForm = ({ productId, onClose }: { productId?: string; onClose: () =
     };
 
     return (
-        <Box
-            component={Paper}
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2,
-                maxWidth: '400px',
-                margin: '50px auto',
-                padding: '30px',
-                backgroundColor: '#fff',
-                borderRadius: '8px',
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-            }}
-        >
-            <Typography variant="h5" component="h1" sx={{ textAlign: 'center', marginBottom: '20px', fontWeight: 'bold' }}>
-                {productId ? 'Editar Producto' : 'Nuevo Producto'}
-            </Typography>
-            <TextField
-                label="C�digo"
-                name="code"
-                value={product.code}
-                onChange={handleInputChange}
-                fullWidth
-                disabled={!!productId}
-                error={!!errors.code}
-                helperText={errors.code}
-            />
-            <TextField
-                label="Descripci�n"
-                name="description"
-                value={product.description}
-                onChange={handleInputChange}
-                fullWidth
-                error={!!errors.description}
-                helperText={errors.description}
-            />
-            <FormControl fullWidth>
-                <InputLabel id="category-label">Categor�a</InputLabel>
-                <Select
-                    labelId="category-label"
-                    value={product.category}
-                    onChange={handleSelectChange}
-                    error={!!errors.category}
+        <div style={{ minHeight: '100vh', backgroundColor: '#e3f2fd', padding: '20px' }}>
+            {/* Contenedor del título y la línea degradada */}
+            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                <Typography
+                    variant="h4" component="h1" className="form-title"
                 >
-                    {categories.map((category) => (
-                        <MenuItem key={category} value={category}>
-                            {category}
-                        </MenuItem>
-                    ))}
-                </Select>
-                {errors.category && <Typography color="error">{errors.category}</Typography>}
-            </FormControl>
-            <TextField
-                label="Stock"
-                name="stock"
-                type="number"
-                value={product.stock}
-                onChange={handleInputChange}
-                fullWidth
-            />
-            <TextField
-                label="Precio Unitario"
-                name="price"
-                type="number"
-                value={product.price}
-                onChange={handleInputChange}
-                fullWidth
-                error={!!errors.price}
-                helperText={errors.price}
-            />
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        checked={product.webDiscount}
-                        onChange={handleCheckboxChange}
-                        name="webDiscount"
-                    />
-                }
-                label="�Descuento Web?"
-            />
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        checked={product.active}
-                        onChange={handleCheckboxChange}
-                        name="active"
-                    />
-                }
-                label="Activo"
-            />
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-                <Button variant="contained" color="primary" onClick={handleSubmit}>
-                    Guardar
-                </Button>
-                <Button variant="outlined" onClick={onClose}>
-                    Cancelar
-                </Button>
+                    {productId ? 'Editar producto' : 'Nuevo producto'}
+                </Typography>
+
+                <div
+                    style={{
+                        height: '2px',
+                        background: 'linear-gradient(to right, #42a5f5, #1565c0)',
+                        borderRadius: '999px',
+                        margin: '16px auto',
+                        width: '50%',
+                    }}
+                ></div>
+            </div>
+
+            {/* Caja del formulario */}
+            <Box
+                component={Paper}
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 2,
+                    width: '400px',
+                    minHeight: '400px',
+                    margin: '0 auto',
+                    padding: '30px',
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)', // Blanco con transparencia
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                }}
+            >
+                <TextField
+                    label="Código"
+                    name="code"
+                    value={product.code}
+                    onChange={handleInputChange}
+                    fullWidth
+                    disabled={!!productId}
+                    error={!!errors.code}
+                    helperText={errors.code}
+                />
+                <TextField
+                    label="Descripción"
+                    name="description"
+                    value={product.description}
+                    onChange={handleInputChange}
+                    fullWidth
+                    error={!!errors.description}
+                    helperText={errors.description}
+                />
+                <FormControl fullWidth>
+                    <InputLabel id="category-label">Categoría</InputLabel>
+                    <Select
+                        labelId="category-label"
+                        value={product.category}
+                        onChange={handleSelectChange}
+                        error={!!errors.category}
+                    >
+                        {categories.map((category) => (
+                            <MenuItem key={category} value={category}>
+                                {category}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    {errors.category && <Typography color="error">{errors.category}</Typography>}
+                </FormControl>
+                <TextField
+                    label="Stock"
+                    name="stock"
+                    type="number"
+                    value={product.stock}
+                    onChange={(e) => {
+                        const value = Math.max(0, Number(e.target.value)); // Solo valores positivos
+                        setProduct((prev) => ({ ...prev, stock: value }));
+                    }}
+                    fullWidth
+                    helperText="El stock debe ser un valor positivo"
+                />
+                <TextField
+                    label="Precio Unitario"
+                    name="price"
+                    type="number"
+                    value={product.price}
+                    onChange={(e) => {
+                        const value = Math.max(0, Number(e.target.value)); 
+                        setProduct((prev) => ({ ...prev, price: value }));
+                    }}
+                    fullWidth
+                    error={product.price <= 0} 
+                    helperText={product.price <= 0 ? "El precio unitario debe ser mayor a cero" : ""} 
+                />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={product.webDiscount}
+                            onChange={handleCheckboxChange}
+                            name="webDiscount"
+                        />
+                    }
+                    label="¿Descuento web?"
+                />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={product.active}
+                            onChange={handleCheckboxChange}
+                            name="active"
+                        />
+                    }
+                    label="Activo"
+                />
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+                    <Button
+                        onClick={handleSubmit}
+                        sx={{
+                            backgroundColor: '#66bb6a',
+                            color: '#fff',
+                            transition: 'transform 0.2s ease',
+                            '&:hover': {
+                                backgroundColor: '#57a05b',
+                                transform: 'scale(1.1)',
+                            },
+                        }}
+                    >
+                        Guardar
+                    </Button>
+                    <Button
+                        onClick={onClose}
+                        sx={{
+                            backgroundColor: '#ef5350',
+                            color: '#fff',
+                            transition: 'transform 0.2s ease',
+                            '&:hover': {
+                                backgroundColor: '#d32f2f',
+                                transform: 'scale(1.1)',
+                            },
+                        }}
+                    >
+                        Cancelar
+                    </Button>
+                </Box>
             </Box>
-        </Box>
+        </div>
     );
+
 };
 
 export default ProductForm;

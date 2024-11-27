@@ -1,8 +1,11 @@
-﻿body {
+﻿@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+
+body {
     margin: 0;
     padding: 0;
-    background-color: #d0f0fd; /* Un celeste claro */
-    height: 100vh; /* Ocupa toda la altura del viewport */
+    background-color: #d0f0fd; 
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -13,4 +16,12 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+}
+
+.form-title {
+    font-family: 'Poppins', sans-serif;
+    color: #0d47a1; 
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
 }
