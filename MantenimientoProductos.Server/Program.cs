@@ -38,12 +38,12 @@ app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 
-// Middleware para establecer UTF-8 en las respuestas
-app.Use(async (context, next) =>
-{
-    context.Response.Headers.Add("Content-Type", "application/json; charset=utf-8");
-    await next();
-});
+//// Middleware para establecer UTF-8 en las respuestas
+//app.Use(async (context, next) =>
+//{
+//    context.Response.Headers.Add("Content-Type", "application/json; charset=utf-8");
+//    await next();
+//});
 
 app.UseAuthorization();
 

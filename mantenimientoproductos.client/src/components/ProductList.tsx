@@ -14,7 +14,8 @@ import {
     ButtonGroup,
     IconButton,
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit'; // Ícono de edición
+import EditIcon from '@mui/icons-material/Edit'; 
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -50,12 +51,11 @@ const ProductList = () => {
     };
 
     const handleNewProduct = () => {
-        console.log('Nuevo producto');
-        navigate('/product/new'); 
+        navigate('/product'); // Redirige a la ruta para crear un nuevo producto
     };
 
     const handleEditProduct = (id: string) => {
-        navigate(`/product/edit/${id}`); // Redirige a editar el producto con el ID
+        navigate(`/product/${id}`); // Redirige a la ruta para editar un producto específico
     };
 
     const handleDeleteProduct = () => {
@@ -169,6 +169,12 @@ const ProductList = () => {
                                                 onClick={() => handleEditProduct(product.productId)}
                                             >
                                                 <EditIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                color="error"
+                                                onClick={() => handleDeleteProduct(product.productId)}
+                                            >
+                                                <DeleteIcon />
                                             </IconButton>
                                         </TableCell>
                                     </TableRow>

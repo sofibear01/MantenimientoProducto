@@ -8,8 +8,8 @@ function App() {
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
             <Routes>
                 <Route path="/" element={<ProductList />} />
-                <Route path="/product/new" element={<ProductForm />} />
-                <Route path="/product/edit/:id" element={<ProductForm />} />
+                <Route path="/product" element={<ProductForm />} />
+                <Route path="/product/:id" element={<ProductForm />} />
             </Routes>
         </div>
     );
