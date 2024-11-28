@@ -5,9 +5,10 @@
 
 
 ------------------ Script para generar la base de datos con datos de prueba -------------------
-CREATE DATABASE MantenimientoProductosPrueba;
 
-USE MantenimientoProductosPrueba;
+CREATE DATABASE MantenimientoProductos;
+
+USE MantenimientoProductos;
 
 -- Tabla ProductCategory
 CREATE TABLE ProductCategory (
