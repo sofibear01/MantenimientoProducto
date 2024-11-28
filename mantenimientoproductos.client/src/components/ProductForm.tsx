@@ -21,7 +21,7 @@ import { SelectChangeEvent } from "@mui/material";
 
 
 const ProductForm: React.FC = () => {
-    const { id } = useParams<{ id: string }>(); // Obtener el id de la URL
+    const { id } = useParams<{ id: string }>(); // Obtener el id del producto seleccionado de la URL
     const navigate = useNavigate();
 
     const [product, setProduct] = useState<Product>({
@@ -49,7 +49,7 @@ const ProductForm: React.FC = () => {
 
     const fetchCategories = async () => {
         try {
-            const response = await api.get("/ProductCategory");
+            const response = await api.get("/ProductCategory"); //llama al getAllCategories del back
             setCategories(response.data);
         } catch (error) {
             console.error("Error fetching categories:", error);
@@ -58,7 +58,7 @@ const ProductForm: React.FC = () => {
 
     const fetchProduct = async (id: string) => {
         try {
-            const response = await api.get(`/Products/${id}`);
+            const response = await api.get(`/Products/${id}`); //busca el producto con el id 
             setProduct({
                 ...response.data,
                 haveEcDiscount: response.data.haveEcDiscount || "N",
@@ -74,6 +74,7 @@ const ProductForm: React.FC = () => {
         setProduct((prev) => ({ ...prev, [name]: value }));
     };
 
+    //maneja el cambio de la categoria
     const handleSelectChange = (event: SelectChangeEvent<number>) => {
         const selectedCategoryId = event.target.value as number;
         setProduct((prev) => ({
@@ -82,11 +83,13 @@ const ProductForm: React.FC = () => {
         }));
     };
 
+    //maneja el cambio del checkbox
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, checked } = e.target;
         setProduct((prev) => ({ ...prev, [name]: checked ? "Y" : "N" }));
     };
 
+    //valida que los campos obligatorios esten completos
     const validate = () => {
         const newErrors: { [key: string]: string } = {};
         if (!product.productId) newErrors.productId = "El código es obligatorio";
@@ -139,6 +142,7 @@ const ProductForm: React.FC = () => {
                 </Typography>
                 <div
                     style={{
+                        //linea horizontal
                         height: "2px",
                         background: "linear-gradient(to right, #42a5f5, #1565c0)",
                         borderRadius: "999px",
@@ -184,9 +188,9 @@ const ProductForm: React.FC = () => {
                     <InputLabel id="category-label">Categoría</InputLabel>
                     <Select
                         labelId="category-label"
-                        value={product.categoryProductId || ''} // Manejo de valor por defecto
+                        value={product.categoryProductId || ''}
                         onChange={handleSelectChange}
-                        error={!!errors.category} // Manejo de errores
+                        error={!!errors.category} 
                     >
                         {categories.map((category) => (
                             <MenuItem key={category.categoryProductId} value={category.categoryProductId}>
@@ -229,7 +233,7 @@ const ProductForm: React.FC = () => {
                             name="haveEcDiscount"
                         />
                     }
-                    label="¿Descuento Web?"
+                    label="¿Descuento web?"
                 />
                 <FormControlLabel
                     control={
@@ -251,7 +255,7 @@ const ProductForm: React.FC = () => {
                 </Box>
             </Box>
 
-            {/* Snackbar para mostrar mensaje de éxito */}
+            {/* para mostrar mensaje de éxito */}
             <Snackbar
                 open={openSnackbar}
                 autoHideDuration={3000}

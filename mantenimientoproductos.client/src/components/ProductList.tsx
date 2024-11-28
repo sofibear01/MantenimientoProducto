@@ -18,7 +18,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 //import VisibilityIcon from '@mui/icons-material/Visibility';
 //import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'; 
-import { jsPDF } from "jspdf"; // Importamos jsPDF
+import { jsPDF } from "jspdf"; // Para exportar listado de productos en PDF
 
 
 import { useNavigate } from 'react-router-dom';
@@ -78,7 +78,7 @@ const ProductList = () => {
         navigate(`/product/${id}`); 
     };
 
-
+    //Baja logica del producto Active = N
     const handleDeleteProduct = async () => {
         if (!selectedProductId) return;
 
@@ -116,12 +116,12 @@ const ProductList = () => {
     const handleExportPDF = () => {
         const doc = new jsPDF();
 
-        doc.text("Listado de Productos", 20, 20); // Título del documento
+        doc.text("Listado de Productos", 20, 20); // Título
 
         // Definir la tabla con los productos
-        let y = 30; // Y se va incrementando para las filas
+        let y = 30; 
 
-        // Encabezados de la tabla
+        // Encabezados
         doc.setFontSize(10);
         doc.text("Product ID", 20, y);
         doc.text("Description", 50, y);
@@ -132,7 +132,7 @@ const ProductList = () => {
         doc.text("Active", 220, y);
         y += 10; // Espacio entre encabezado y cuerpo de la tabla
 
-        // Contenido de la tabla (productos)
+        //contenido
         products.forEach((product, index) => {
             doc.text(product.productId, 20, y);
             doc.text(product.productDescription, 50, y);
@@ -144,7 +144,6 @@ const ProductList = () => {
             y += 10; // Aumentamos la altura de la fila
         });
 
-        // Guardar el archivo PDF
         doc.save('productos.pdf');
     };
 
@@ -221,7 +220,7 @@ const ProductList = () => {
                 </div>
 
 
-                {/* Snackbar para mostrar mensaje de éxito */}
+                {/* para mostrar mensaje de éxito */}
                 <Snackbar
                     open={openSnackbar}
                     autoHideDuration={3000}
@@ -233,7 +232,6 @@ const ProductList = () => {
                     </Alert>
                 </Snackbar>
 
-                {/* Contenedor para la tabla */}
                 <TableContainer
                     component={Paper}
                     style={{

@@ -64,7 +64,7 @@ public class ProductsController : ControllerBase
                 return BadRequest(ModelState);
             }
 
-            // Crear la entidad Product a partir del DTO
+            //uso el DTO para crear el product
             var product = new Product
             {
                 ProductId = productDto.ProductId,
