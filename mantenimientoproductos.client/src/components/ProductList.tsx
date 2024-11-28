@@ -11,8 +11,8 @@ import {
     Typography,
     TablePagination,
     Button,
-    ButtonGroup,
     IconButton,
+    Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, Alert,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit'; 
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -21,10 +21,12 @@ import { useNavigate } from 'react-router-dom';
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
+    const [openDialog, setOpenDialog] = useState(false);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [showForm, setShowForm] = useState(false);
     const [selectedProductId, setSelectedProductId] = useState<string | undefined>();
+    const [openSnackbar, setOpenSnackbar] = useState(false); 
+    const [snackbarMessage, setSnackbarMessage] = useState("");   
     const navigate = useNavigate(); // Hook para navegación
 
 
@@ -58,8 +60,32 @@ const ProductList = () => {
         navigate(`/product/${id}`); // Redirige a la ruta para editar un producto específico
     };
 
-    const handleDeleteProduct = () => {
-        console.log('Eliminar producto');
+
+    const handleDeleteProduct = async () => {
+        if (!selectedProductId) return;
+
+        try {
+            const response = await api.delete(`/Products/${selectedProductId}`);
+            if (response.status === 200) {
+                fetchProducts(); 
+                setSnackbarMessage("Producto eliminado con éxito");
+                setOpenSnackbar(true); 
+            }
+        } catch (error) {
+            console.error('Error desactivando producto:', error);
+        }
+        setOpenDialog(false);
+    };
+
+
+    const handleOpenDialog = (id: string) => {
+        setSelectedProductId(id);
+        setOpenDialog(true);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+        setSelectedProductId(null);
     };
 
     const handleExportProducts = () => {
@@ -130,11 +156,23 @@ const ProductList = () => {
                     </Button>
                 </div>
 
+                {/* Snackbar para mostrar mensaje de éxito */}
+                <Snackbar
+                    open={openSnackbar}
+                    autoHideDuration={3000}
+                    onClose={() => setOpenSnackbar(false)}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                >
+                    <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: "100%" }}>
+                        {snackbarMessage}
+                    </Alert>
+                </Snackbar>
+
                 {/* Contenedor para la tabla */}
                 <TableContainer
                     component={Paper}
                     style={{
-                        width: '100%', // Ocupa todo el ancho disponible para coincidir con los botones
+                        width: '100%', 
                         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
                     }}
                 >
@@ -172,7 +210,7 @@ const ProductList = () => {
                                             </IconButton>
                                             <IconButton
                                                 color="error"
-                                                onClick={() => handleDeleteProduct(product.productId)}
+                                                onClick={() => handleOpenDialog(product.productId)}
                                             >
                                                 <DeleteIcon />
                                             </IconButton>
@@ -191,6 +229,24 @@ const ProductList = () => {
                         rowsPerPageOptions={[5, 10, 25]}
                     />
                 </TableContainer>
+
+                {/* Dialog de confirmación */}
+                <Dialog open={openDialog} onClose={handleCloseDialog}>
+                    <DialogTitle>Confirmación</DialogTitle>
+                    <DialogContent>
+                        <Typography variant="body1">
+                            ¿Estás seguro de que deseas desactivar este producto?
+                        </Typography>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseDialog} color="primary">
+                            No
+                        </Button>
+                        <Button onClick={handleDeleteProduct} color="secondary">
+                            Sí
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         </div>
     );

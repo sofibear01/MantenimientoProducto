@@ -132,21 +132,26 @@ public class ProductsController : ControllerBase
         try
         {
             var product = await _context.Products.FindAsync(id);
+
             if (product == null)
             {
                 _logger.Warn($"Product with id {id} not found in DeleteProduct.");
                 return NotFound();
             }
 
-            _context.Products.Remove(product);
+            product.IsActive = "N"; // Asumiendo que "N" indica inactivo
+
+            // Guardar los cambios en la base de datos
             await _context.SaveChangesAsync();
-            _logger.Info($"Product with id {id} deleted successfully.");
-            return NoContent();
+
+            _logger.Info($"Product with id {id} marked as inactive (baja lógica) successfully.");
+
+            return NoContent(); // Retorna sin contenido al cliente
         }
         catch (Exception ex)
         {
             _logger.Error($"Error in DeleteProduct for id: {id}", ex);
-            return StatusCode(500, "Ocurrió un error al eliminar el producto.");
+            return StatusCode(500, "Ocurrió un error al marcar el producto como inactivo.");
         }
     }
 }
