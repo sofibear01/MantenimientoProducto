@@ -36,8 +36,9 @@ const ProductForm: React.FC = () => {
     const [categories, setCategories] = useState<CategoryProduct[]>([]);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");   
 
-    // Cargar datos iniciales (categorías y producto si estamos editando)
+
     useEffect(() => {
         fetchCategories();
 
@@ -100,18 +101,33 @@ const ProductForm: React.FC = () => {
         if (!validate()) return;
 
         try {
+            let response;
             if (id) {
-                await api.put(`/Products/${id}`, product);
+                // Actualizar producto
+                response = await api.put(`/Products/${id}`, product);
+                if (response.status === 204) {
+                    setSnackbarMessage("Producto actualizado con éxito");
+                }
             } else {
-                await api.post('/Products', product);
+                // Crear nuevo producto
+                response = await api.post('/Products', product);
+                if (response.status === 200) {
+                    setSnackbarMessage("Producto agregado con éxito");
+                }
             }
-            setOpenSnackbar(true); // Abre el popup
+            setOpenSnackbar(true);
+
             setTimeout(() => {
-                setOpenSnackbar(false); // Cierra el popup
-                navigate('/'); // Redirige a ProductList después de 3 segundos
+                setOpenSnackbar(false);
+                navigate('/'); 
             }, 3000);
         } catch (error) {
             console.error('Error saving product:', error);
+            setSnackbarMessage("Ocurrió un error al guardar el producto");
+            setOpenSnackbar(true);
+            setTimeout(() => {
+                setOpenSnackbar(false); 
+            }, 3000);
         }
     };
 

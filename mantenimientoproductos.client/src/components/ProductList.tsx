@@ -16,19 +16,25 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit'; 
 import DeleteIcon from '@mui/icons-material/Delete';
+//import VisibilityIcon from '@mui/icons-material/Visibility';
+//import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'; 
+import { jsPDF } from "jspdf"; // Importamos jsPDF
+
 
 import { useNavigate } from 'react-router-dom';
+//import { Product } from '../models/Product';
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
+   // const [filteredProducts, setFilteredProducts] = useState([]);
     const [openDialog, setOpenDialog] = useState(false);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [selectedProductId, setSelectedProductId] = useState<string | undefined>();
     const [openSnackbar, setOpenSnackbar] = useState(false); 
     const [snackbarMessage, setSnackbarMessage] = useState("");   
-    const navigate = useNavigate(); // Hook para navegación
-
+    //const [showInactive, setShowInactive] = useState(false); 
+    const navigate = useNavigate(); 
 
     useEffect(() => {
         fetchProducts();
@@ -36,12 +42,22 @@ const ProductList = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await api.get('/Products'); // Ruta correcta del backend
+            const response = await api.get('/Products'); 
             setProducts(response.data);
+            //filterProducts(response.data, showInactive); 
         } catch (error) {
             console.error('Error fetching products:', error);
         }
     };
+
+    //const filterProducts = (products: Product[], showInactive: boolean) => {
+    //    if (showInactive) {
+    //        setFilteredProducts(products); // Si mostramos inactivos, todos los productos se muestran
+    //    } else {
+    //        const activeProducts = products.filter(product => product.isActive === 'Y');
+    //        setFilteredProducts(activeProducts); // Si no, solo los activos
+    //    }
+    //};
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -52,12 +68,14 @@ const ProductList = () => {
         setPage(0);
     };
 
+    //Crear nuevo producto
     const handleNewProduct = () => {
-        navigate('/product'); // Redirige a la ruta para crear un nuevo producto
+        navigate('/product');
     };
 
+    //Editar producto
     const handleEditProduct = (id: string) => {
-        navigate(`/product/${id}`); // Redirige a la ruta para editar un producto específico
+        navigate(`/product/${id}`); 
     };
 
 
@@ -88,8 +106,46 @@ const ProductList = () => {
         setSelectedProductId(null);
     };
 
-    const handleExportProducts = () => {
-        console.log('Exportar productos');
+
+    //const toggleShowInactive = () => {
+    //    setShowInactive(prev => !prev); // Alternamos el estado de los productos inactivos
+    //    filterProducts(products, !showInactive); // Aplicamos el filtro al cambiar el estado
+    //};
+
+    // Función para exportar la tabla a PDF
+    const handleExportPDF = () => {
+        const doc = new jsPDF();
+
+        doc.text("Listado de Productos", 20, 20); // Título del documento
+
+        // Definir la tabla con los productos
+        let y = 30; // Y se va incrementando para las filas
+
+        // Encabezados de la tabla
+        doc.setFontSize(10);
+        doc.text("Product ID", 20, y);
+        doc.text("Description", 50, y);
+        doc.text("Category ID", 90, y);
+        doc.text("Stock", 120, y);
+        doc.text("Price", 150, y);
+        doc.text("Discount", 180, y);
+        doc.text("Active", 220, y);
+        y += 10; // Espacio entre encabezado y cuerpo de la tabla
+
+        // Contenido de la tabla (productos)
+        products.forEach((product, index) => {
+            doc.text(product.productId, 20, y);
+            doc.text(product.productDescription, 50, y);
+            doc.text(String(product.categoryProductId), 90, y);
+            doc.text(String(product.stock), 120, y);
+            doc.text("$" + product.price.toFixed(2), 150, y);
+            doc.text(product.haveEcDiscount === 'Y' ? "Yes" : "No", 180, y);
+            doc.text(product.isActive === 'Y' ? "Yes" : "No", 220, y);
+            y += 10; // Aumentamos la altura de la fila
+        });
+
+        // Guardar el archivo PDF
+        doc.save('productos.pdf');
     };
 
     return (
@@ -100,11 +156,11 @@ const ProductList = () => {
 
             <div
                 style={{
-                    height: '2px', // Grosor de la línea
+                    height: '2px', 
                     background: 'linear-gradient(to right, #42a5f5, #1565c0)',
                     borderRadius: '999px',
                     margin: '16px auto',
-                    width: '90%', // Línea horizontal centrada
+                    width: '90%',
                 }}
             ></div>
 
@@ -116,15 +172,23 @@ const ProductList = () => {
                     paddingTop: '20px',
                 }}
             >
-                {/* Contenedor para los botones */}
-                <div
-                    style={{
-                        display: 'flex',
-                        justifyContent: 'flex-end', // Alinea los botones a la derecha
-                        marginBottom: '20px',
-                        width: '100%',
-                    }}
-                >
+                <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '20px' }}>
+                    {/*<IconButton*/}
+                    {/*    onClick={toggleShowInactive}*/}
+                    {/*    sx={{*/}
+                    {/*        backgroundColor: '#f57c00',*/}
+                    {/*        color: '#fff',*/}
+                    {/*        marginRight: '10px',*/}
+                    {/*        '&:hover': {*/}
+                    {/*            backgroundColor: '#e64a19',*/}
+                    {/*        },*/}
+                    {/*        width: '40px',*/}
+                    {/*        height: '40px',*/}
+                    {/*        borderRadius: '4px', */}
+                    {/*    }}*/}
+                    {/*>*/}
+                    {/*    {showInactive ? <VisibilityOffIcon /> : <VisibilityIcon />}*/}
+                    {/*</IconButton>*/}
                     <Button
                         onClick={handleNewProduct}
                         sx={{
@@ -141,7 +205,7 @@ const ProductList = () => {
                         Nuevo
                     </Button>
                     <Button
-                        onClick={handleExportProducts}
+                        onClick={handleExportPDF}
                         sx={{
                             backgroundColor: '#29b6f6',
                             color: '#fff',
@@ -155,6 +219,7 @@ const ProductList = () => {
                         Exportar
                     </Button>
                 </div>
+
 
                 {/* Snackbar para mostrar mensaje de éxito */}
                 <Snackbar

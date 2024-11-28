@@ -88,9 +88,8 @@ public class ProductsController : ControllerBase
         }
     }
 
-
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateProduct(string id, [FromBody] Product updatedProduct)
+    public async Task<IActionResult> UpdateProduct(string id, [FromBody] ProductCreateDto productDto)
     {
         _logger.Info($"UpdateProduct called with id: {id}");
         try
@@ -108,15 +107,18 @@ public class ProductsController : ControllerBase
                 return NotFound();
             }
 
-            product.ProductDescription = updatedProduct.ProductDescription;
-            product.Stock = updatedProduct.Stock;
-            product.Price = updatedProduct.Price;
-            product.HaveEcDiscount = updatedProduct.HaveEcDiscount;
-            product.IsActive = updatedProduct.IsActive;
+            // Actualizamos la entidad Product con los datos del DTO
+            product.ProductDescription = productDto.ProductDescription;
+            product.Stock = productDto.Stock;
+            product.Price = productDto.Price;
+            product.HaveEcDiscount = productDto.HaveEcDiscount;
+            product.IsActive = productDto.IsActive;
+            product.CategoryProductId = productDto.CategoryProductId;
 
             await _context.SaveChangesAsync();
+
             _logger.Info($"Product with id {id} updated successfully.");
-            return NoContent();
+            return NoContent(); // Devuelve un código 204 si la actualización es exitosa
         }
         catch (Exception ex)
         {
